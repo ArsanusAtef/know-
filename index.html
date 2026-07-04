@@ -834,7 +834,6 @@ function buildFormData(p, services, data){
   // params a real Google Form submission includes
   fd.append("fvv", "1");
   fd.append("pageHistory", pages.join(","));
-  fd.append("submit", "Submit");
   return fd;
 }
 
@@ -865,7 +864,7 @@ function postToGoogleForm(params){
     const finish = () => { if (!done){ done = true; form.remove(); resolve(); } };
     iframe.addEventListener("load", finish, { once: true });
     setTimeout(finish, 4000); // fallback in case load never fires
-    form.submit();
+    HTMLFormElement.prototype.submit.call(form); // safe even if a field is named "submit"
   });
 }
 
@@ -885,21 +884,28 @@ async function sendBooking(){
   btn.disabled = true;
   btn.textContent = "Sending…";
 
-  // the Google Form's meet section can only carry ONE type per submission,
-  // so if the customer books both (arrival + departure) we send two submissions
-  const meets = services.filter(id => MEET_TYPE_VALUE[id]);
-  const others = services.filter(id => !MEET_TYPE_VALUE[id]);
-  const batches = (meets.length === 2)
-    ? [ [...others, meets[0]], [meets[1]] ]
-    : [ services ];
+  try{
+    // the Google Form's meet section can only carry ONE type per submission,
+    // so if the customer books both (arrival + departure) we send two submissions
+    const meets = services.filter(id => MEET_TYPE_VALUE[id]);
+    const others = services.filter(id => !MEET_TYPE_VALUE[id]);
+    const batches = (meets.length === 2)
+      ? [ [...others, meets[0]], [meets[1]] ]
+      : [ services ];
 
-  for (const batch of batches){
-    await postToGoogleForm(buildFormData(p, batch, data));
-  }
+    for (const batch of batches){
+      await postToGoogleForm(buildFormData(p, batch, data));
+    }
 
-  if (document.getElementById("rememberMe").checked){
-    await store.set(K_PROFILE, p);
-    await store.set(K_LAST, { services, data, savedAt: new Date().toISOString() });
+    if (document.getElementById("rememberMe").checked){
+      await store.set(K_PROFILE, p);
+      await store.set(K_LAST, { services, data, savedAt: new Date().toISOString() });
+    }
+  }catch(err){
+    btn.disabled = false;
+    btn.textContent = "Send booking request →";
+    toast("Something went wrong — please try again.");
+    return;
   }
 
   document.getElementById("bookingArea").classList.add("hidden");
