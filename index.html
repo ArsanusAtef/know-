@@ -328,7 +328,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:0 16px 34px
 
 </main>
 
-<footer>We Know EGYPT — Cairo, Egypt · Your details stay on your device and are only shared with our team when you send a booking. <span style="opacity:.55">· v5</span></footer>
+<footer>We Know EGYPT — Cairo, Egypt · Your details stay on your device and are only shared with our team when you send a booking.</footer>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -469,7 +469,7 @@ const SERVICES = [
     {k:"pickup", t:"text", l:"Pickup location", req:1},
     {k:"dropoff", t:"text", l:"Drop-off location", req:1},
     {k:"date", t:"date", l:"Date", req:1, half:1},
-    {k:"time", t:"time", l:"Time", req:1, half:1},
+    {k:"time", t:"time", l:"Time", half:1},
     {k:"pax", t:"number", l:"Number of passengers", req:1, half:1, min:1},
     {k:"luggage", t:"number", l:"Number of luggage", half:1, min:0},
     {k:"flight", t:"text", l:"Flight number", hint:"Required for airport trips only."},
@@ -479,7 +479,7 @@ const SERVICES = [
   ]},
   { id:"daytour", icon:"🐪", name:"Day Tour", desc:"Pyramids, museums & more", fields:[
     {k:"date", t:"date", l:"Tour date", req:1, half:1},
-    {k:"time", t:"time", l:"Start time", req:1, half:1, hint:"We recommend starting between 7:30 and 9:30 AM."},
+    {k:"time", t:"time", l:"Start time", half:1, hint:"We recommend starting between 7:30 and 9:30 AM."},
     {k:"pickup", t:"text", l:"Pickup location", req:1},
     {k:"dest", t:"text", l:"Tour destination / interests", req:1, ph:"e.g. Giza Pyramids + Egyptian Museum"},
     {k:"adults", t:"number", l:"Adults", half:1, min:0},
@@ -489,21 +489,9 @@ const SERVICES = [
     {k:"pay", t:"pills", l:"Preferred payment method", req:1, opts:PAY_ALL},
     {k:"comment", t:"textarea", l:"Any comment"}
   ]},
-  { id:"airportPack", icon:"🧳", name:"Transportation + Meet", desc:"Airport meet service + private transfer", note:"Cairo Airport only", fields:[
-    {k:"direction", t:"pills", l:"Trip type", req:1, opts:["Arrival — Meet & Greet + transfer to your hotel","Departure — pickup + Meet & Assist at the airport"]},
-    {k:"date", t:"date", l:"Flight date", req:1, half:1},
-    {k:"time", t:"time", l:"Flight time", req:1, half:1},
-    {k:"flight", t:"text", l:"Flight number", req:1},
-    {k:"address", t:"text", l:"Hotel / address in the city", req:1, ph:"Where should we pick you up or drop you off?"},
-    {k:"pax", t:"number", l:"Number of travelers", req:1, half:1, min:1},
-    {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0},
-    {k:"vehicle", t:"select", l:"Preferred vehicle", opts:["Standard Sedan (up to 3 pax & 2 luggage)","Van (up to 9 pax & 9 luggage)","Mini Bus (up to 18 pax & 18 luggage)","Other"]},
-    {k:"pay", t:"pills", l:"Preferred payment method", req:1, opts:PAY_ALL},
-    {k:"comment", t:"textarea", l:"Any comment"}
-  ]},
   { id:"meetGreet", icon:"🛬", name:"Meet & Greet — Arrival", desc:"We welcome you at Cairo Airport", note:"Cairo Airport only", fields:[
     {k:"date", t:"date", l:"Arrival date", req:1, half:1},
-    {k:"time", t:"time", l:"Arrival time", req:1, half:1},
+    {k:"time", t:"time", l:"Arrival time", half:1},
     {k:"flight", t:"text", l:"Flight number", req:1},
     {k:"pax", t:"number", l:"Number of travelers", req:1, half:1, min:1},
     {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0},
@@ -512,7 +500,7 @@ const SERVICES = [
   ]},
   { id:"meetAssist", icon:"🛫", name:"Meet & Assist — Departure", desc:"Farewell service at Cairo Airport", note:"Cairo Airport only", fields:[
     {k:"date", t:"date", l:"Departure date", req:1, half:1},
-    {k:"time", t:"time", l:"Departure time", req:1, half:1},
+    {k:"time", t:"time", l:"Departure time", half:1},
     {k:"flight", t:"text", l:"Flight number", req:1},
     {k:"pax", t:"number", l:"Number of travelers", req:1, half:1, min:1},
     {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0},
@@ -768,113 +756,85 @@ function appendEntry(fd, entry, value){
   fd.append(entry, value);
 }
 
-// section number(s) each service occupies in the Google Form
-const SECTIONS_OF = { transport:[1], daytour:[2], airportPack:[1,3], meetGreet:[3], meetAssist:[3], package:[4], flight:[5], hotel:[6], car:[7] };
-const SEC_NAV = { 1:NAV.transport, 2:NAV.daytour, 3:NAV.meetGreet, 4:NAV.package, 5:NAV.flight, 6:NAV.hotel, 7:NAV.car };
-const SEC_HOWHELP = { 1:"transportation", 2:"Day tour", 3:"meet & great / meet & assist", 4:"Tour package (Multi-day tours )", 5:"Flight Booking", 6:"Hotel Booking", 7:"Long-term car hire (minimum 12-month contract)" };
-const AIRPORT_NAME = "Cairo International Airport";
-
-function dateTo(fd, entry, v){
-  if (!v) return;
-  const p = v.split("-"); // yyyy-mm-dd
-  appendEntry(fd, entry + "_year", p[0]);
-  appendEntry(fd, entry + "_month", String(parseInt(p[1], 10)));
-  appendEntry(fd, entry + "_day", String(parseInt(p[2], 10)));
-}
-function timeTo(fd, entry, v){
-  if (!v) return;
-  const t = v.split(":");
-  appendEntry(fd, entry + "_hour", String(parseInt(t[0], 10)));
-  appendEntry(fd, entry + "_minute", String(parseInt(t[1], 10)));
-}
-function choiceTo(fd, entry, v){
-  if (!v) return;
-  v = VALUE_MAP[v] || v;
-  if (v === "Other"){
-    appendEntry(fd, entry, "__other_option__");
-    appendEntry(fd, entry + ".other_option_response", "Other");
-  } else appendEntry(fd, entry, v);
-}
-
-// the combined Transportation + Meet card fills BOTH form sections at once,
-// so it lands in your Orders sheet as two rows under one Order ID
-function appendAirportPack(fd, d){
-  const arrival = (d.direction || "").indexOf("Arrival") === 0;
-  const M = ENTRY.meetGreet, T = ENTRY.transport;
-  appendEntry(fd, ENTRY.meetType, arrival ? "Meet & Greet" : "Meet & Assist");
-  // transportation section
-  appendEntry(fd, T.pickup,  arrival ? AIRPORT_NAME : d.address);
-  appendEntry(fd, T.dropoff, arrival ? d.address : AIRPORT_NAME);
-  dateTo(fd, T.date, d.date);
-  timeTo(fd, T.time, d.time);
-  appendEntry(fd, T.pax, d.pax);
-  appendEntry(fd, T.luggage, d.luggage);
-  appendEntry(fd, T.flight, d.flight);
-  choiceTo(fd, T.vehicle, d.vehicle);
-  choiceTo(fd, T.pay, d.pay);
-  appendEntry(fd, T.comment, d.comment);
-  // meet section
-  dateTo(fd, M.date, d.date);
-  timeTo(fd, M.time, d.time);
-  appendEntry(fd, M.flight, d.flight);
-  appendEntry(fd, M.pax, d.pax);
-  appendEntry(fd, M.luggage, d.luggage);
-  choiceTo(fd, M.pay, d.pay);
-  appendEntry(fd, M.comment, d.comment);
-}
-
 function buildFormData(p, services, data){
   const fd = new URLSearchParams();
-
-  // the form sections this batch "visits", in order
-  const secs = [];
-  services.forEach(id => (SECTIONS_OF[id] || []).forEach(s => { if (!secs.includes(s)) secs.push(s); }));
 
   // Section 1 — common details
   appendEntry(fd, ENTRY.fullName, p.fullName);
   appendEntry(fd, ENTRY.nationality, p.nationality);
   appendEntry(fd, ENTRY.whatsapp, p.whatsapp);
   appendEntry(fd, ENTRY.email, p.email);
-  appendEntry(fd, ENTRY.howHelp, SEC_HOWHELP[secs[0]] || "");
+  appendEntry(fd, ENTRY.howHelp, HOWHELP_MAP[services[0]] || "");
 
   services.forEach(id => {
-    const svcData = data[id] || {};
-    if (id === "airportPack"){ appendAirportPack(fd, svcData); return; }
     const map = ENTRY[id] || {};
+    const svcData = data[id] || {};
     if (MEET_TYPE_VALUE[id]) appendEntry(fd, ENTRY.meetType, MEET_TYPE_VALUE[id]);
     svcById(id).fields.forEach(f => {
       const entry = map[f.k];
       let v = svcData[f.k];
       if (!entry || !v) return;
-      if ((DATE_FIELDS[id] || []).includes(f.k)) return dateTo(fd, entry, v);
-      if ((TIME_FIELDS[id] || []).includes(f.k)) return timeTo(fd, entry, v);
+
+      // date question → entry.N_year / _month / _day
+      if ((DATE_FIELDS[id] || []).includes(f.k)){
+        const parts = v.split("-"); // yyyy-mm-dd
+        appendEntry(fd, entry + "_year", parts[0]);
+        appendEntry(fd, entry + "_month", String(parseInt(parts[1], 10)));
+        appendEntry(fd, entry + "_day", String(parseInt(parts[2], 10)));
+        return;
+      }
+      // time question → entry.N_hour / _minute
+      if ((TIME_FIELDS[id] || []).includes(f.k)){
+        const t = v.split(":");
+        appendEntry(fd, entry + "_hour", String(parseInt(t[0], 10)));
+        appendEntry(fd, entry + "_minute", String(parseInt(t[1], 10)));
+        return;
+      }
       // Day Tour start time is a dropdown of 10-minute steps → round to nearest step
       if ((CHOICE_TIME_FIELDS[id] || []).includes(f.k)){
         let h = parseInt(v.split(":")[0], 10), mi = parseInt(v.split(":")[1], 10);
         mi = Math.round(mi / 10) * 10;
         if (mi === 60){ mi = 0; h = (h + 1) % 24; }
-        return appendEntry(fd, entry, pad2(h) + ":" + pad2(mi));
+        appendEntry(fd, entry, pad2(h) + ":" + pad2(mi));
+        return;
       }
-      choiceTo(fd, entry, v);
+
+      v = VALUE_MAP[v] || v;
+      if (v === "Other"){
+        appendEntry(fd, entry, "__other_option__");
+        appendEntry(fd, entry + ".other_option_response", "Other");
+        return;
+      }
+      appendEntry(fd, entry, v);
     });
   });
 
   // answer the "book another service?" navigation questions like a real user path
-  for (let i = 0; i < secs.length; i++){
-    const nav = SEC_NAV[secs[i]];
+  for (let i = 0; i < services.length; i++){
+    const nav = NAV[services[i]];
     if (!nav) continue;
-    if (secs[i + 1]){
+    const next = services[i + 1];
+    if (next && NAV[next] && NAV[next].another !== nav.another){
       appendEntry(fd, nav.another, "Yes");
-      appendEntry(fd, nav.which, SEC_HOWHELP[secs[i + 1]]);
-    } else {
+      appendEntry(fd, nav.which, HOWHELP_MAP[next]);
+    } else if (!next){
       appendEntry(fd, nav.another, "No");
     }
   }
 
   // pageHistory must match the sections actually "visited" — Google validates
   // required questions ONLY in visited sections
+  const PAGE_OF = { transport:1, daytour:2, meetGreet:3, meetAssist:3, package:4, flight:5, hotel:6, car:7 };
+  const pages = [0];
+  services.forEach(id => {
+    const pg = PAGE_OF[id];
+    if (pg && !pages.includes(pg)) pages.push(pg);
+  });
+
+  // params a real Google Form submission includes
   fd.append("fvv", "1");
-  fd.append("pageHistory", [0].concat(secs).join(","));
+  fd.append("pageHistory", pages.join(","));
+  fd.append("submit", "Submit");
   return fd;
 }
 
@@ -905,7 +865,7 @@ function postToGoogleForm(params){
     const finish = () => { if (!done){ done = true; form.remove(); resolve(); } };
     iframe.addEventListener("load", finish, { once: true });
     setTimeout(finish, 4000); // fallback in case load never fires
-    HTMLFormElement.prototype.submit.call(form); // safe even if a field is named "submit"
+    form.submit();
   });
 }
 
@@ -925,36 +885,21 @@ async function sendBooking(){
   btn.disabled = true;
   btn.textContent = "Sending…";
 
-  try{
-    // each Google Form section can only appear ONCE per submission, so services
-    // that share a section (both meets, or Transportation + the combined
-    // Transportation+Meet card) are split into separate submissions automatically
-    const batches = [];
-    services.forEach(id => {
-      const secs = SECTIONS_OF[id] || [];
-      let b = batches.find(x => !x.secs.some(s => secs.includes(s)));
-      if (!b){ b = { ids: [], secs: [] }; batches.push(b); }
-      b.ids.push(id);
-      b.secs = b.secs.concat(secs);
-    });
+  // the Google Form's meet section can only carry ONE type per submission,
+  // so if the customer books both (arrival + departure) we send two submissions
+  const meets = services.filter(id => MEET_TYPE_VALUE[id]);
+  const others = services.filter(id => !MEET_TYPE_VALUE[id]);
+  const batches = (meets.length === 2)
+    ? [ [...others, meets[0]], [meets[1]] ]
+    : [ services ];
 
-    for (let i = 0; i < batches.length; i++){
-      if (i > 0){
-        btn.textContent = `Sending… (${i + 1} of ${batches.length})`;
-        await new Promise(r => setTimeout(r, 8000)); // gap so sheet writes never overlap
-      }
-      await postToGoogleForm(buildFormData(p, batches[i].ids, data));
-    }
+  for (const batch of batches){
+    await postToGoogleForm(buildFormData(p, batch, data));
+  }
 
-    if (document.getElementById("rememberMe").checked){
-      await store.set(K_PROFILE, p);
-      await store.set(K_LAST, { services, data, savedAt: new Date().toISOString() });
-    }
-  }catch(err){
-    btn.disabled = false;
-    btn.textContent = "Send booking request →";
-    toast("Something went wrong — please try again.");
-    return;
+  if (document.getElementById("rememberMe").checked){
+    await store.set(K_PROFILE, p);
+    await store.set(K_LAST, { services, data, savedAt: new Date().toISOString() });
   }
 
   document.getElementById("bookingArea").classList.add("hidden");
