@@ -331,7 +331,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:0 16px 34px
 
 </main>
 
-<footer>We Know EGYPT — Cairo, Egypt · Your details stay on your device and are only shared with our team when you send a booking. <span style="opacity:.55">· v8</span></footer>
+<footer>We Know EGYPT — Cairo, Egypt · Your details stay on your device and are only shared with our team when you send a booking. <span style="opacity:.55">· v9</span></footer>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -345,6 +345,11 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:0 16px 34px
    ============================================================ */
 const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/d/e/1FAIpQLScIt8s-f9keQZPcbhHDSt4SuBphKvTQpyhxurnakicbhELVQw/formResponse";
 const BUSINESS_WHATSAPP = "201204277792";
+
+/* ⬇⬇⬇  حط هنا رابط الـ Web App اللي جوجل هيديهولك بعد الـ Deploy
+   (الرابط بيبدأ بـ https://script.google.com/macros/s/........./exec)
+   لو سيبته فاضي، الصفحة هتشتغل بالطريقة المباشرة القديمة.  ⬇⬇⬇ */
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZh0uYOR0lzSqi-Q_hETjBfkBWQqBN0MAJZf_U6A2Cf_bJo--0S2iyrG2jQaDO4kUO1Q/exec";
 
 const ENTRY = {
   // Section 1 — common
@@ -984,6 +989,38 @@ function buildFormData(p, services, data){
    against total failure.
    ============================================================ */
 async function postToGoogleForm(params){
+  /* -------- Path 1 (preferred): through the Apps Script web app --------
+     The web app lives inside YOUR Google account, submits the order to
+     the form server-side (so your whole pipeline runs untouched), reads
+     Google's REAL answer, and returns { ok:true } only when the row was
+     actually recorded. This is the only true delivery confirmation. */
+  if (APPS_SCRIPT_URL.indexOf("https://") === 0){
+    let lastErr = null;
+    for (let attempt = 1; attempt <= 3; attempt++){
+      try{
+        const res = await fetch(APPS_SCRIPT_URL, { method: "POST", body: params.toString() });
+        if (!res.ok) throw new Error("script_http_" + res.status);
+        const out = await res.json();
+        if (out && out.ok === true) return;   // ✓ Google CONFIRMED the row was written
+        // Google itself refused the submission — retrying won't help,
+        // report it honestly so the customer gets the WhatsApp rescue path
+        const e = new Error(out && out.reason ? out.reason : "google_rejected");
+        e.rejected = true;
+        throw e;
+      }catch(err){
+        if (err && err.rejected) throw err;   // real rejection → surface immediately
+        lastErr = err;                        // clerk unreachable → retry
+        await new Promise(r => setTimeout(r, 1500 * attempt));
+      }
+    }
+    // the clerk itself is down — fall through to the direct method below
+    // so the order still gets its best chance of arriving
+  }
+
+  /* -------- Path 2 (fallback): direct to Google Forms --------
+     Used only when no web app URL is set or the web app is unreachable.
+     Because of no-cors the reply can't be read, so this only guarantees
+     the request REACHED Google, not that it was accepted. */
   let lastErr = null;
   for (let attempt = 1; attempt <= 3; attempt++){
     try{
@@ -1092,11 +1129,13 @@ async function sendBooking(){
     // sending genuinely failed — tell the customer the truth + give a rescue path
     btn.disabled = false;
     btn.textContent = "Send booking request →";
-    errBox.innerHTML =
-      "Your request was <u>not</u> sent — the connection to our server failed. " +
-      "Please check your internet and tap Send again, or " +
-      '<a href="' + waFallbackLink(p, services, data) + '" target="_blank" rel="noopener">' +
+    const waLink = '<a href="' + waFallbackLink(p, services, data) + '" target="_blank" rel="noopener">' +
       "send it to us on WhatsApp instead</a> — your full request is already written for you.";
+    errBox.innerHTML = (err && err.rejected)
+      ? "Your request was <u>not</u> recorded by our booking system. " +
+        "Please review your answers and tap Send again, or " + waLink
+      : "Your request was <u>not</u> sent — the connection to our server failed. " +
+        "Please check your internet and tap Send again, or " + waLink;
     errBox.style.display = "block";
     return;
   }
