@@ -331,7 +331,7 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:0 16px 34px
 
 </main>
 
-<footer>We Know EGYPT — Cairo, Egypt · Your details stay on your device and are only shared with our team when you send a booking. <span style="opacity:.55">· v7</span></footer>
+<footer>We Know EGYPT — Cairo, Egypt · Your details stay on your device and are only shared with our team when you send a booking. <span style="opacity:.55">· v8</span></footer>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -471,8 +471,8 @@ const SERVICES = [
     {k:"dropoff", t:"text", l:"Drop-off location", req:1},
     {k:"date", t:"date", l:"Date", req:1, half:1},
     {k:"time", t:"time", l:"Time", req:1, half:1},
-    {k:"pax", t:"number", l:"Number of passengers", req:1, half:1, min:1},
-    {k:"luggage", t:"number", l:"Number of luggage", half:1, min:0},
+    {k:"pax", t:"number", l:"Number of passengers", req:1, half:1, min:1, max:60},
+    {k:"luggage", t:"number", l:"Number of luggage", half:1, min:0, max:99},
     {k:"flight", t:"text", l:"Flight number", hint:"Required for airport trips only."},
     {k:"vehicle", t:"select", l:"Preferred vehicle", opts:["Standard Sedan (up to 3 pax & 2 luggage)","Van (up to 9 pax & 9 luggage)","Mini Bus (up to 18 pax & 18 luggage)","Other"]},
     {k:"pay", t:"pills", l:"Preferred payment method", req:1, opts:PAY_ALL},
@@ -483,8 +483,8 @@ const SERVICES = [
     {k:"time", t:"time", l:"Start time", req:1, half:1, hint:"We recommend starting between 7:30 and 9:30 AM."},
     {k:"pickup", t:"text", l:"Pickup location", req:1},
     {k:"dest", t:"text", l:"Tour destination / interests", req:1, ph:"e.g. Giza Pyramids + Egyptian Museum"},
-    {k:"adults", t:"number", l:"Adults", half:1, min:0},
-    {k:"children", t:"number", l:"Children (6–11.99 yrs)", half:1, min:0},
+    {k:"adults", t:"number", l:"Adults", half:1, min:0, max:99},
+    {k:"children", t:"number", l:"Children (6–11.99 yrs)", half:1, min:0, max:99},
     {k:"guide", t:"pills", l:"Tour guide required?", opts:["Yes","No"]},
     {k:"guideLang", t:"select", l:"Tour guide language", opts:["English","Spanish","French","German","Italian"], showIf:{k:"guide", v:"Yes"}},
     {k:"pay", t:"pills", l:"Preferred payment method", req:1, opts:PAY_ALL},
@@ -495,8 +495,8 @@ const SERVICES = [
     {k:"date", t:"date", l:"Arrival date", req:1, half:1},
     {k:"time", t:"time", l:"Arrival time", req:1, half:1},
     {k:"flight", t:"text", l:"Flight number", req:1},
-    {k:"pax", t:"number", l:"Number of passengers", req:1, half:1, min:1},
-    {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0},
+    {k:"pax", t:"number", l:"Number of passengers", req:1, half:1, min:1, max:60},
+    {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0, max:99},
     {k:"vehicle", t:"select", l:"Preferred vehicle", opts:["Standard Sedan (up to 3 pax & 2 luggage)","Van (up to 9 pax & 9 luggage)","Mini Bus (up to 18 pax & 18 luggage)","Other"]},
     {k:"pay", t:"pills", l:"Preferred payment method", req:1, opts:PAY_ALL},
     {k:"comment", t:"textarea", l:"Any comment"}
@@ -506,8 +506,8 @@ const SERVICES = [
     {k:"date", t:"date", l:"Departure date", req:1, half:1},
     {k:"time", t:"time", l:"Departure time", req:1, half:1},
     {k:"flight", t:"text", l:"Flight number", req:1},
-    {k:"pax", t:"number", l:"Number of passengers", req:1, half:1, min:1},
-    {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0},
+    {k:"pax", t:"number", l:"Number of passengers", req:1, half:1, min:1, max:60},
+    {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0, max:99},
     {k:"vehicle", t:"select", l:"Preferred vehicle", opts:["Standard Sedan (up to 3 pax & 2 luggage)","Van (up to 9 pax & 9 luggage)","Mini Bus (up to 18 pax & 18 luggage)","Other"]},
     {k:"pay", t:"pills", l:"Preferred payment method", req:1, opts:PAY_ALL},
     {k:"comment", t:"textarea", l:"Any comment"}
@@ -516,8 +516,8 @@ const SERVICES = [
     {k:"date", t:"date", l:"Arrival date", req:1, half:1},
     {k:"time", t:"time", l:"Arrival time", req:1, half:1},
     {k:"flight", t:"text", l:"Flight number", req:1},
-    {k:"pax", t:"number", l:"Number of travelers", req:1, half:1, min:1},
-    {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0},
+    {k:"pax", t:"number", l:"Number of travelers", req:1, half:1, min:1, max:60},
+    {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0, max:99},
     {k:"pay", t:"pills", l:"Preferred payment method", req:1, opts:PAY_ALL},
     {k:"comment", t:"textarea", l:"Any comment"}
   ]},
@@ -525,8 +525,8 @@ const SERVICES = [
     {k:"date", t:"date", l:"Departure date", req:1, half:1},
     {k:"time", t:"time", l:"Departure time", req:1, half:1},
     {k:"flight", t:"text", l:"Flight number", req:1},
-    {k:"pax", t:"number", l:"Number of travelers", req:1, half:1, min:1},
-    {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0},
+    {k:"pax", t:"number", l:"Number of travelers", req:1, half:1, min:1, max:60},
+    {k:"luggage", t:"number", l:"Number of luggage", req:1, half:1, min:0, max:99},
     {k:"pay", t:"pills", l:"Preferred payment method", req:1, opts:PAY_ALL},
     {k:"comment", t:"textarea", l:"Any comment"}
   ]},
@@ -557,7 +557,7 @@ const SERVICES = [
     {k:"city", t:"text", l:"Country / city", req:1},
     {k:"checkin", t:"date", l:"Check-in date", half:1},
     {k:"checkout", t:"date", l:"Check-out date", half:1},
-    {k:"rooms", t:"number", l:"Number of rooms", half:1, min:1},
+    {k:"rooms", t:"number", l:"Number of rooms", half:1, min:1, max:99},
     {k:"category", t:"select", l:"Hotel category", opts:["5 Stars","4 Stars","3 Stars"], half:1},
     {k:"guests", t:"text", l:"Guests", hint:"Please specify adults (12+) and children (6–11.99)."},
     {k:"meal", t:"select", l:"Meal plan", opts:["Breakfast","Half board","All inclusive"]},
@@ -584,6 +584,18 @@ function toast(msg){
   const t = document.getElementById("toast");
   t.textContent = msg; t.classList.add("show");
   setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+/* Normalizes a number typed by the customer.
+   "000" → "0", "07" → "7", " 3 " → "3".
+   Returns null when the value is NOT a valid whole number
+   (e.g. "abc", "1.5", "1e3", "-2") so it can be blocked.  */
+function cleanNumber(v){
+  if (v == null) return "";
+  const s = String(v).trim();
+  if (s === "") return "";
+  if (!/^\d+$/.test(s)) return null;
+  return String(parseInt(s, 10));
 }
 
 /* ============================================================
@@ -628,7 +640,8 @@ function fieldHTML(svcId, f){
   const id = `f_${svcId}_${f.k}`;
   const label = `<label for="${id}">${f.l} ${f.req ? '<span class="req">*</span>' : ''}</label>`;
   const hint = f.hint ? `<div class="hint">${f.hint}</div>` : "";
-  const err = f.req ? `<div class="err-msg">This field is required.</div>` : "";
+  // number fields also get an error message so invalid values can be flagged
+  const err = (f.req || f.t === "number") ? `<div class="err-msg">This field is required.</div>` : "";
   const showIf = f.showIf ? ` data-showif-k="f_${svcId}_${f.showIf.k}" data-showif-v="${f.showIf.v}"` : "";
   let control = "";
   if (f.t === "select"){
@@ -640,7 +653,9 @@ function fieldHTML(svcId, f){
     control = `<textarea id="${id}" placeholder="${f.ph||''}"></textarea>`;
   } else {
     const min = f.min != null ? ` min="${f.min}"` : "";
-    control = `<input type="${f.t}" id="${id}"${min} placeholder="${f.ph||''}">`;
+    const max = f.max != null ? ` max="${f.max}"` : "";
+    const step = f.t === "number" ? ` step="1" inputmode="numeric"` : "";
+    control = `<input type="${f.t}" id="${id}"${min}${max}${step} placeholder="${f.ph||''}">`;
   }
   return `<div class="field" data-fid="${id}" data-req="${f.req?1:0}"${showIf}>${label}${control}${hint}${err}</div>`;
 }
@@ -676,6 +691,7 @@ function addServiceSection(id, data){
   wrap.insertBefore(newSec, after || null);
   if (data) applyServiceData(id, data);
   wireConditionalFields(newSec);
+  wireNumberFields(newSec);
 }
 
 function wireConditionalFields(scope){
@@ -690,13 +706,32 @@ function wireConditionalFields(scope){
   });
 }
 
+/* Auto-tidies number fields the moment the customer leaves them,
+   so a typed "000" turns into "0" right in front of them. */
+function wireNumberFields(scope){
+  (scope || document).querySelectorAll('input[type="number"]').forEach(inp => {
+    inp.addEventListener("change", () => {
+      const c = cleanNumber(inp.value);
+      if (c !== null && c !== "") inp.value = c;
+      // re-validate this field live so a fixed value clears its red state
+      const fEl = inp.closest(".field");
+      if (fEl && fEl.classList.contains("error")) validateNumberField(fEl);
+    });
+  });
+}
+
 function getFieldValue(svcId, f){
   const id = `f_${svcId}_${f.k}`;
   if (f.t === "pills"){
     const sel = document.querySelector(`input[name="${id}"]:checked`);
     return sel ? sel.value : "";
   }
-  return val(id);
+  let v = val(id);
+  if (f.t === "number" && v !== ""){
+    const c = cleanNumber(v);
+    if (c !== null) v = c; // "000" is sent to Google as "0"
+  }
+  return v;
 }
 function setFieldValue(svcId, f, v){
   if (v == null || v === "") return;
@@ -738,6 +773,40 @@ function validateDetails(){
   return ok;
 }
 
+/* Checks one service field. Returns true when it is fine.
+   Numbers are checked strictly — Google Forms silently REJECTS
+   the whole submission when a number question receives a value
+   its validation doesn't accept, and (because of no-cors) the
+   page can never see that rejection. So nothing invalid may
+   ever be allowed to leave the page. */
+function validateServiceField(fEl){
+  const sec = fEl.closest(".svc-section").dataset.svc;
+  const key = fEl.dataset.fid.replace(`f_${sec}_`, "");
+  const f = svcById(sec).fields.find(x => x.k === key);
+  if (!f) return true;
+  const raw = f.t === "pills"
+    ? (document.querySelector(`input[name="${fEl.dataset.fid}"]:checked`) || {}).value || ""
+    : val(fEl.dataset.fid);
+  let bad = false, msg = "This field is required.";
+  if (f.req && (raw == null || String(raw).trim() === "")){
+    bad = true;
+  } else if (f.t === "number" && String(raw).trim() !== ""){
+    const n = cleanNumber(raw);
+    if (n === null){
+      bad = true; msg = "Please enter a whole number (digits only).";
+    } else if (f.min != null && parseInt(n, 10) < f.min){
+      bad = true; msg = f.min === 1 ? "Please enter at least 1." : `Please enter ${f.min} or more.`;
+    } else if (f.max != null && parseInt(n, 10) > f.max){
+      bad = true; msg = `Please enter ${f.max} or less.`;
+    }
+  }
+  const em = fEl.querySelector(".err-msg");
+  if (em && bad) em.textContent = msg;
+  markError(fEl, bad);
+  return !bad;
+}
+function validateNumberField(fEl){ return validateServiceField(fEl); }
+
 function validateAll(){
   let ok = validateDetails();
   let firstBad = ok ? null : document.getElementById("detailsCard");
@@ -748,14 +817,13 @@ function validateAll(){
     if (!firstBad) firstBad = document.getElementById("servicesCard");
   }
 
-  document.querySelectorAll("#svcForms .field[data-req='1']").forEach(fEl => {
+  // check EVERY visible field (not only the required ones) so that
+  // invalid numbers in optional fields — like "000" luggage — are
+  // caught here instead of being silently rejected by Google
+  document.querySelectorAll("#svcForms .field").forEach(fEl => {
     if (fEl.classList.contains("hidden")) return;
-    const sec = fEl.closest(".svc-section").dataset.svc;
-    const key = fEl.dataset.fid.replace(`f_${sec}_`, "");
-    const f = svcById(sec).fields.find(x => x.k === key);
-    const bad = !getFieldValue(sec, f);
-    markError(fEl, bad);
-    if (bad){ ok = false; if (!firstBad) firstBad = fEl; }
+    const good = validateServiceField(fEl);
+    if (!good){ ok = false; if (!firstBad) firstBad = fEl; }
   });
 
   if (!ok && firstBad) firstBad.scrollIntoView({block:"center"});
@@ -856,7 +924,14 @@ function buildFormData(p, services, data){
     svcById(id).fields.forEach(f => {
       const entry = map[f.k];
       let v = svcData[f.k];
-      if (!entry || !v) return;
+      if (!entry || v == null || v === "") return;
+      // final safety net: numbers are re-normalized right before sending,
+      // so a value like "000" can never reach Google in a rejectable form
+      if (f.t === "number"){
+        const c = cleanNumber(v);
+        if (c === null || c === "") return; // never send an invalid number
+        v = c;
+      }
       if ((DATE_FIELDS[id] || []).includes(f.k)) return dateTo(fd, entry, v);
       if ((TIME_FIELDS[id] || []).includes(f.k)) return timeTo(fd, entry, v);
       // Day Tour start time is a dropdown of 10-minute steps → round to nearest step
@@ -890,20 +965,23 @@ function buildFormData(p, services, data){
 }
 
 /* ============================================================
-   Delivery — the important fix (v7)
+   Delivery (v8)
    ------------------------------------------------------------
-   The old version posted into a hidden iframe and assumed
-   success after 4 seconds, even if the request never reached
-   Google (e.g. the customer's mobile connection dropped for a
-   moment). That showed the thank-you screen for orders that
-   were never delivered.
+   IMPORTANT LIMITATION to know: because the browser must use
+   mode:"no-cors" with Google Forms, the page can NEVER read
+   Google's reply. fetch() succeeding only proves the request
+   REACHED Google — it does NOT prove Google ACCEPTED it. If a
+   value fails the form's own validation (this is exactly what
+   happened with "000" in the luggage question), Google rejects
+   the whole submission, writes NO row, and the page has no way
+   to know.
 
-   Now the page sends with fetch(): the promise only resolves
-   after the request has actually REACHED Google's server. If
-   the connection fails, it retries 3 times, and if it still
-   can't get through, the customer sees a real error with a
-   one-tap WhatsApp fallback that contains the full order —
-   so no order can ever be silently lost again.
+   That is why v8 validates and normalizes EVERY value on the
+   page — including optional number fields — before sending:
+   nothing Google could reject is ever allowed to leave the
+   page. The retry logic below still protects against network
+   drops, and the local outbox + WhatsApp fallback protect
+   against total failure.
    ============================================================ */
 async function postToGoogleForm(params){
   let lastErr = null;
@@ -911,8 +989,8 @@ async function postToGoogleForm(params){
     try{
       await fetch(GOOGLE_FORM_ACTION, {
         method: "POST",
-        mode: "no-cors",          // Google doesn't allow reading the reply, but
-        keepalive: true,          // the request itself is fully delivered
+        mode: "no-cors",          // Google doesn't allow reading the reply
+        keepalive: true,
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: params.toString()
       });
